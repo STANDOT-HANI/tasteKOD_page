@@ -411,7 +411,7 @@ main {
 
 .kod-section-head {
   position: absolute;
-  top: 200px;
+  top: clamp(118px, 13.4vh, 150px);
   left: 50%;
   z-index: 8;
   display: grid;
@@ -419,8 +419,10 @@ main {
   justify-items: center;
   gap: clamp(16px, 1.8vw, 26px);
   text-align: center;
-  transform: translateX(-50%);
+  opacity: var(--head-opacity, 1);
+  transform: translate(-50%, var(--head-y, 0px));
   pointer-events: none;
+  will-change: opacity, transform;
 }
 
 .kod-section-head h2 {
@@ -463,10 +465,9 @@ main {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  clip-path: inset(var(--frame-start, 0px) 0 0 0);
   isolation: isolate;
   perspective: 1500px;
-  perspective-origin: 50% calc(var(--frame-start, 544px) + 220px);
+  perspective-origin: 50% 50%;
 }
 
 .kod-track {
@@ -477,7 +478,7 @@ main {
 
 .kod-frame {
   position: absolute;
-  top: var(--frame-start, 544px);
+  top: 0;
   left: 0;
   right: 0;
   display: grid;
@@ -1177,7 +1178,7 @@ main {
   }
 
   .kod-section-head {
-    top: 120px;
+    top: 84px;
     gap: 14px;
   }
 

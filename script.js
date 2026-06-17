@@ -57,9 +57,14 @@ function updateCardStack() {
 
   document.body.classList.toggle("is-card-view", state.sectionInView);
 
-  const frameStart = cardHeader
-    ? cardHeader.offsetTop + cardHeader.offsetHeight + 200
-    : Math.round(window.innerHeight * 0.5);
+  const headFade = clamp(1 - state.progress * 12, 0, 1);
+  const headY = -72 * clamp(state.progress * 4, 0, 1);
+
+  if (cardHeader) {
+    cardHeader.style.setProperty("--head-opacity", headFade.toFixed(3));
+    cardHeader.style.setProperty("--head-y", `${headY.toFixed(2)}px`);
+  }
+
   const frameHeights = cards.map((card) => {
     const figure = card.querySelector("figure");
     return figure ? figure.offsetHeight : card.offsetHeight;
@@ -80,16 +85,17 @@ function updateCardStack() {
   );
   const activeTop =
     cardTops[lowerIndex] + (cardTops[upperIndex] - cardTops[lowerIndex]) * mix;
-  const wheelLead = clamp(window.innerHeight * 0.12, 96, 140);
-
-  cardStack.style.setProperty("--frame-start", `${frameStart}px`);
+  const activeHeight =
+    scaledHeights[lowerIndex] +
+    (scaledHeights[upperIndex] - scaledHeights[lowerIndex]) * mix;
+  const centerTop = window.innerHeight / 2 - activeHeight / 2;
 
   cards.forEach((card, index) => {
     const distance = index - activeIndex;
     const absDistance = Math.abs(distance);
     const opacity = clamp(1 - absDistance * 0.58, 0.18, 1);
     const brightness = clamp(1 - absDistance * 0.52, 0.24, 1);
-    const wheelY = cardTops[index] - activeTop + wheelLead;
+    const wheelY = cardTops[index] - activeTop + centerTop;
     const wheelZ = -Math.min(absDistance * 170, 520);
     const rotate = clamp(distance * -16, -38, 38);
 
