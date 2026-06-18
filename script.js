@@ -4,9 +4,19 @@ const cardHeader = document.querySelector(".kod-section-head");
 const cardStack = document.querySelector(".kod-stack");
 const cardTrack = document.querySelector(".kod-track");
 const cards = [...document.querySelectorAll(".kod-frame")];
+const archiveModal = document.querySelector(".archive-modal");
+const archiveModalImage = document.querySelector(".archive-modal-image");
+const archiveModalCount = document.querySelector(".archive-modal-count");
+const archiveModalDownload = document.querySelector(".archive-modal-download");
+const archiveModalClose = document.querySelector(".archive-modal-close");
+const archiveModalPrev = document.querySelector(".archive-modal-nav.prev");
+const archiveModalNext = document.querySelector(".archive-modal-nav.next");
+const archiveModalDots = document.querySelector(".archive-modal-dots");
 let snapTimer = 0;
 let settleTimer = 0;
 let isSnapping = false;
+let archiveModalIndex = 0;
+let archiveLastFocus = null;
 
 function setSpotlight(event) {
   if (!hero) return;
@@ -182,6 +192,84 @@ function scheduleSnap() {
 function handleScroll() {
   updateCardStack();
   scheduleSnap();
+}
+
+function renderArchiveModal(index) {
+  if (!archiveModal || !archiveModalImage || !cards.length) return;
+
+  archiveModalIndex = (index + cards.length) % cards.length;
+  const sourceImage = cards[archiveModalIndex].querySelector("img");
+  if (!sourceImage) return;
+
+  archiveModalImage.src = sourceImage.src;
+  archiveModalImage.alt = sourceImage.alt;
+  archiveModalCount.textContent = `${archiveModalIndex + 1} / ${cards.length}`;
+  archiveModalDownload.href = sourceImage.src;
+  archiveModalDownload.download = `cortis-kod-${String(archiveModalIndex + 1).padStart(2, "0")}.png`;
+
+  [...archiveModalDots.children].forEach((dot, dotIndex) => {
+    const isActive = dotIndex === archiveModalIndex;
+    dot.classList.toggle("is-active", isActive);
+    dot.setAttribute("aria-current", isActive ? "true" : "false");
+  });
+}
+
+function openArchiveModal(index) {
+  if (!archiveModal) return;
+
+  window.clearTimeout(snapTimer);
+  archiveLastFocus = document.activeElement;
+  renderArchiveModal(index);
+  archiveModal.classList.add("is-open");
+  archiveModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("archive-modal-open");
+  archiveModalClose.focus();
+}
+
+function closeArchiveModal() {
+  if (!archiveModal) return;
+
+  archiveModal.classList.remove("is-open");
+  archiveModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("archive-modal-open");
+
+  if (archiveLastFocus instanceof HTMLElement) archiveLastFocus.focus();
+}
+
+if (archiveModal && archiveModalDots) {
+  cards.forEach((card, index) => {
+    const dot = document.createElement("button");
+    dot.className = "archive-modal-dot";
+    dot.type = "button";
+    dot.setAttribute("aria-label", `${index + 1}번째 이미지 보기`);
+    dot.addEventListener("click", () => renderArchiveModal(index));
+    archiveModalDots.appendChild(dot);
+
+    card.addEventListener("click", () => openArchiveModal(index));
+    card.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      openArchiveModal(index);
+    });
+  });
+
+  archiveModalClose.addEventListener("click", closeArchiveModal);
+  archiveModalPrev.addEventListener("click", () => renderArchiveModal(archiveModalIndex - 1));
+  archiveModalNext.addEventListener("click", () => renderArchiveModal(archiveModalIndex + 1));
+
+  archiveModal.addEventListener("click", (event) => {
+    if (event.target === archiveModal) closeArchiveModal();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!archiveModal.classList.contains("is-open")) return;
+
+    if (event.key === "Escape") closeArchiveModal();
+    if (event.key === "ArrowLeft") renderArchiveModal(archiveModalIndex - 1);
+    if (event.key === "ArrowRight") renderArchiveModal(archiveModalIndex + 1);
+  });
+
+  renderArchiveModal(0);
 }
 
 window.addEventListener("scroll", handleScroll, { passive: true });

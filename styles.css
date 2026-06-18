@@ -492,7 +492,14 @@ main {
   filter: brightness(var(--card-brightness, 0.42));
   z-index: var(--card-layer, 1);
   backface-visibility: hidden;
+  cursor: pointer;
+  outline: none;
   will-change: transform, opacity, filter;
+}
+
+.kod-frame:focus-visible figure {
+  outline: 2px solid var(--acid);
+  outline-offset: 6px;
 }
 
 .kod-frame figure {
@@ -932,104 +939,215 @@ main {
   line-height: 1.58;
 }
 
-.lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) 72px;
-  align-items: center;
-  gap: 20px;
-  padding: var(--page-gutter);
-  background: rgba(3, 4, 3, 0.82);
-  backdrop-filter: blur(22px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 220ms ease;
+body.archive-modal-open {
+  overflow: hidden;
 }
 
-.lightbox.is-open {
+.archive-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: clamp(28px, 5vw, 96px);
+  background: rgba(0, 0, 0, 0.84);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 220ms ease,
+    visibility 220ms ease;
+}
+
+.archive-modal.is-open {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
-.lightbox-card {
+.archive-modal-dialog {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 340px);
-  gap: 20px;
-  align-items: stretch;
-  width: min(1180px, 100%);
-  margin: 0 auto;
-}
-
-.lightbox-image {
-  min-height: min(74svh, 760px);
-  border: 1px solid rgba(244, 240, 233, 0.2);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(1180px, calc(100vw - 144px));
+  max-height: min(82svh, 860px);
+  padding: 28px 34px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 8px;
-  background:
-    radial-gradient(circle at 62% 34%, rgba(255, 255, 255, 0.28), transparent 20%),
-    linear-gradient(135deg, var(--c1), var(--c2) 48%, var(--c3));
+  color: #fff;
+  background: #151515;
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.58);
+  opacity: 0;
+  transform: translateY(18px) scale(0.985);
+  transition:
+    opacity 220ms ease,
+    transform 260ms cubic-bezier(0.18, 0.86, 0.28, 1);
 }
 
-.lightbox-card figcaption {
+.archive-modal.is-open .archive-modal-dialog {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.archive-modal-toolbar {
   display: flex;
-  flex-direction: column;
-  justify-content: end;
-  gap: 10px;
-  min-height: 280px;
-  padding: 24px;
-  border: 1px solid rgba(244, 240, 233, 0.16);
-  border-radius: 8px;
-  background: rgba(244, 240, 233, 0.05);
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 88px;
 }
 
-.lightbox-card figcaption span {
-  color: var(--acid);
-  font-size: 13px;
-  font-weight: 950;
-  text-transform: uppercase;
+.archive-modal-count {
+  padding-top: 8px;
+  font-size: 16px;
+  font-weight: 800;
 }
 
-.lightbox-card figcaption strong {
-  font-size: clamp(28px, 4vw, 76px);
-  line-height: 0.92;
+.archive-modal-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
 }
 
-.lightbox-close,
-.lightbox-nav {
-  border: 1px solid rgba(244, 240, 233, 0.22);
-  border-radius: 999px;
-  background: rgba(244, 240, 233, 0.07);
+.archive-modal-icon,
+.archive-modal-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
   cursor: pointer;
   transition:
+    color 180ms ease,
     background 180ms ease,
-    color 180ms ease;
+    border-color 180ms ease;
 }
 
-.lightbox-close:hover,
-.lightbox-close:focus-visible,
-.lightbox-nav:hover,
-.lightbox-nav:focus-visible {
-  color: #080908;
-  background: var(--acid);
+.archive-modal-icon:hover,
+.archive-modal-icon:focus-visible,
+.archive-modal-nav:hover,
+.archive-modal-nav:focus-visible {
+  border-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.16);
+  outline: none;
 }
 
-.lightbox-close {
+.archive-modal-icon svg,
+.archive-modal-nav svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.archive-modal-download {
   position: absolute;
-  top: 24px;
-  right: 24px;
-  width: 44px;
-  height: 44px;
-  font-size: 28px;
-  line-height: 1;
+  top: 28px;
+  right: 94px;
 }
 
-.lightbox-nav {
-  width: 58px;
-  height: 58px;
+.archive-modal-close {
+  position: absolute;
+  top: 28px;
+  right: 34px;
+}
+
+.archive-modal-tooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  width: max-content;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  font-weight: 800;
+  background: #3a3a3a;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -8px);
+  transition:
+    opacity 160ms ease,
+    visibility 160ms ease,
+    transform 200ms cubic-bezier(0.18, 0.86, 0.28, 1);
+}
+
+.archive-modal-download:hover .archive-modal-tooltip,
+.archive-modal-download:focus-visible .archive-modal-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.archive-modal-tooltip::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  border: 6px solid transparent;
+  border-bottom-color: #3a3a3a;
+  transform: translateX(-50%);
+}
+
+.archive-modal-viewer {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 20px;
+  min-height: 0;
+}
+
+.archive-modal-figure {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+}
+
+.archive-modal-image {
+  display: block;
+  max-width: 100%;
+  max-height: min(58svh, 640px);
+  object-fit: contain;
+}
+
+.archive-modal-nav {
+  width: 46px;
+  height: 46px;
   justify-self: center;
-  font-size: 42px;
-  line-height: 1;
+}
+
+.archive-modal-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 44px;
+  padding-top: 18px;
+}
+
+.archive-modal-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+}
+
+.archive-modal-dot.is-active {
+  background: #fff;
 }
 
 @media (max-width: 1180px) {
@@ -1267,38 +1385,78 @@ main {
     min-height: 430px;
   }
 
-  .lightbox {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .archive-modal {
+    align-items: center;
+    padding: 18px 16px 116px;
   }
 
-  .lightbox-nav {
+  .archive-modal-dialog {
+    width: 100%;
+    max-height: calc(100svh - 152px);
+    padding: 24px 20px 24px;
+  }
+
+  .archive-modal-toolbar {
+    min-height: 112px;
+  }
+
+  .archive-modal-count {
+    padding-top: 8px;
+    font-size: 18px;
+  }
+
+  .archive-modal-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .archive-modal-download {
+    top: 24px;
+    right: 86px;
+  }
+
+  .archive-modal-close {
+    top: 24px;
+    right: 20px;
+  }
+
+  .archive-modal-tooltip {
+    font-size: 15px;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  .archive-modal-viewer {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .archive-modal-image {
+    width: 100%;
+    max-height: 42svh;
+  }
+
+  .archive-modal-nav {
     position: absolute;
-    top: 50%;
-    width: 46px;
-    height: 46px;
-    font-size: 34px;
+    top: auto;
+    bottom: -94px;
+    width: 58px;
+    height: 58px;
+    background: #262626;
   }
 
-  .lightbox-nav.prev {
-    left: 16px;
+  .archive-modal-nav.prev {
+    left: calc(50% - 78px);
   }
 
-  .lightbox-nav.next {
-    right: 16px;
+  .archive-modal-nav.next {
+    right: calc(50% - 78px);
   }
 
-  .lightbox-card {
-    grid-template-columns: 1fr;
-  }
-
-  .lightbox-image {
-    min-height: 58svh;
-  }
-
-  .lightbox-card figcaption {
-    min-height: auto;
-    padding: 18px;
+  .archive-modal-dots {
+    min-height: 46px;
+    padding-top: 22px;
   }
 }
 

@@ -86,7 +86,7 @@
 
           <div class="kod-stack" aria-label="CORTIS private photo archive">
             <div class="kod-track">
-              <article class="kod-frame frame-01" data-card-index="0">
+              <article class="kod-frame frame-01" data-card-index="0" role="button" tabindex="0" aria-label="첫 번째 미공개 이미지 원본 보기">
                 <span class="side-label left">KOD Moment</span>
                 <figure>
                   <img src="./assets/cortis-01.png" alt="CORTIS members sitting together outside a building" />
@@ -94,7 +94,7 @@
                 <span class="side-label right">Behind Cut</span>
               </article>
 
-              <article class="kod-frame frame-02" data-card-index="1">
+              <article class="kod-frame frame-02" data-card-index="1" role="button" tabindex="0" aria-label="두 번째 미공개 이미지 원본 보기">
                 <span class="side-label left">KOD Moment</span>
                 <figure>
                   <img src="./assets/cortis-02.png" alt="CORTIS members looking down toward the camera" />
@@ -102,7 +102,7 @@
                 <span class="side-label right">Behind Cut</span>
               </article>
 
-              <article class="kod-frame frame-03" data-card-index="2">
+              <article class="kod-frame frame-03" data-card-index="2" role="button" tabindex="0" aria-label="세 번째 미공개 이미지 원본 보기">
                 <span class="side-label left">KOD Moment</span>
                 <figure>
                   <img src="./assets/cortis-03.png" alt="CORTIS members standing together in a mountain landscape" />
@@ -110,7 +110,7 @@
                 <span class="side-label right">Behind Cut</span>
               </article>
 
-              <article class="kod-frame frame-04" data-card-index="3">
+              <article class="kod-frame frame-04" data-card-index="3" role="button" tabindex="0" aria-label="네 번째 미공개 이미지 원본 보기">
                 <span class="side-label left">KOD Moment</span>
                 <figure>
                   <img src="./assets/cortis-04.png" alt="CORTIS members' shoes gathered in a circle" />
@@ -118,7 +118,7 @@
                 <span class="side-label right">Behind Cut</span>
               </article>
 
-              <article class="kod-frame frame-05" data-card-index="4">
+              <article class="kod-frame frame-05" data-card-index="4" role="button" tabindex="0" aria-label="다섯 번째 미공개 이미지 원본 보기">
                 <span class="side-label left">KOD Moment</span>
                 <figure>
                   <img src="./assets/cortis-05.png" alt="CORTIS members jumping in a city street" />
@@ -145,6 +145,47 @@
         <strong>KOD!</strong>
       </div>
     </footer>
+
+    <div class="archive-modal" id="archive-modal" aria-hidden="true">
+      <div class="archive-modal-dialog" role="dialog" aria-modal="true" aria-label="CORTIS 미공개 이미지 원본 뷰어">
+        <div class="archive-modal-toolbar">
+          <span class="archive-modal-count">1 / 5</span>
+          <div class="archive-modal-actions">
+            <a class="archive-modal-icon archive-modal-download" href="./assets/cortis-01.png" download="cortis-kod-01.png" aria-label="원본 이미지 저장">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12" />
+                <path d="m7 10 5 5 5-5" />
+                <path d="M5 20h14" />
+              </svg>
+              <span class="archive-modal-tooltip">이미지 저장</span>
+            </a>
+            <button class="archive-modal-icon archive-modal-close" type="button" aria-label="원본 이미지 창 닫기">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 5 19 19M19 5 5 19" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="archive-modal-viewer">
+          <button class="archive-modal-nav prev" type="button" aria-label="이전 이미지">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 5-7 7 7 7" />
+            </svg>
+          </button>
+          <figure class="archive-modal-figure">
+            <img class="archive-modal-image" src="./assets/cortis-01.png" alt="CORTIS 미공개 이미지 원본" />
+          </figure>
+          <button class="archive-modal-nav next" type="button" aria-label="다음 이미지">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 5 7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="archive-modal-dots" aria-label="이미지 페이지 선택"></div>
+      </div>
+    </div>
 
     <script src="./script.js"></script>
   </body>
